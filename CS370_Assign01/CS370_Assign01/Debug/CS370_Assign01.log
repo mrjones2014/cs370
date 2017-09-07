@@ -1,13 +1,13 @@
 ﻿  DonQuixote.cpp
-c:\users\mjone\desktop\cs370\cs370_assign01\cs370_assign01\donquixote.cpp(35): warning C4838: conversion from 'double' to 'GLfloat' requires a narrowing conversion
-c:\users\mjone\desktop\cs370\cs370_assign01\cs370_assign01\donquixote.cpp(35): warning C4244: 'initializing': conversion from 'double' to 'GLfloat', possible loss of data
-c:\users\mjone\desktop\cs370\cs370_assign01\cs370_assign01\donquixote.cpp(38): warning C4838: conversion from 'double' to 'GLfloat' requires a narrowing conversion
-c:\users\mjone\desktop\cs370\cs370_assign01\cs370_assign01\donquixote.cpp(38): warning C4244: 'initializing': conversion from 'double' to 'GLfloat', possible loss of data
-c:\users\mjone\desktop\cs370\cs370_assign01\cs370_assign01\donquixote.cpp(45): warning C4838: conversion from 'double' to 'GLfloat' requires a narrowing conversion
-c:\users\mjone\desktop\cs370\cs370_assign01\cs370_assign01\donquixote.cpp(45): warning C4244: 'initializing': conversion from 'double' to 'GLfloat', possible loss of data
-c:\users\mjone\desktop\cs370\cs370_assign01\cs370_assign01\donquixote.cpp(97): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-c:\users\mjone\desktop\cs370\cs370_assign01\cs370_assign01\donquixote.cpp(98): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-c:\users\mjone\desktop\cs370\cs370_assign01\cs370_assign01\donquixote.cpp(99): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-c:\users\mjone\desktop\cs370\cs370_assign01\cs370_assign01\donquixote.cpp(156): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
-c:\users\mjone\desktop\cs370\cs370_assign01\cs370_assign01\donquixote.cpp(186): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
-  CS370_Assign01.vcxproj -> C:\Users\mjone\Desktop\cs370\CS370_Assign01\Debug\CS370_Assign01.exe
+c:\users\mjone\documents\school\cs370\cs370_assign01\cs370_assign01\donquixote.cpp(36): warning C4838: conversion from 'double' to 'GLfloat' requires a narrowing conversion
+c:\users\mjone\documents\school\cs370\cs370_assign01\cs370_assign01\donquixote.cpp(36): warning C4244: 'initializing': conversion from 'double' to 'GLfloat', possible loss of data
+c:\users\mjone\documents\school\cs370\cs370_assign01\cs370_assign01\donquixote.cpp(39): warning C4838: conversion from 'double' to 'GLfloat' requires a narrowing conversion
+c:\users\mjone\documents\school\cs370\cs370_assign01\cs370_assign01\donquixote.cpp(39): warning C4244: 'initializing': conversion from 'double' to 'GLfloat', possible loss of data
+c:\users\mjone\documents\school\cs370\cs370_assign01\cs370_assign01\donquixote.cpp(46): warning C4838: conversion from 'double' to 'GLfloat' requires a narrowing conversion
+c:\users\mjone\documents\school\cs370\cs370_assign01\cs370_assign01\donquixote.cpp(46): warning C4244: 'initializing': conversion from 'double' to 'GLfloat', possible loss of data
+c:\users\mjone\documents\school\cs370\cs370_assign01\cs370_assign01\donquixote.cpp(99): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\mjone\documents\school\cs370\cs370_assign01\cs370_assign01\donquixote.cpp(100): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\mjone\documents\school\cs370\cs370_assign01\cs370_assign01\donquixote.cpp(101): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\mjone\documents\school\cs370\cs370_assign01\cs370_assign01\donquixote.cpp(160): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\mjone\documents\school\cs370\cs370_assign01\cs370_assign01\donquixote.cpp(204): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+  CS370_Assign01.vcxproj -> C:\Users\mjone\Documents\School\CS370\CS370_Assign01\Debug\CS370_Assign01.exe

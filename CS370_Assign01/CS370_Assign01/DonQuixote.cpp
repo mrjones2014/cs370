@@ -27,6 +27,7 @@ GLfloat sky_square[4][2] = {
 };
 
 // Sun global variables
+GLfloat sunRadius = 0.2f;
 
 // House global variables
 GLfloat house_square[4][2] = { 
@@ -55,6 +56,7 @@ void drawHouseBody();
 void drawHouseRoof();
 void drawHouse();
 void drawFanBlade(int _theta);
+void drawSun();
 
 int main(int argc, char* argv[])
 {
@@ -97,6 +99,7 @@ void render_Scene()
 	drawFanBlade(0.0f + theta);
 	drawFanBlade(120.0f + theta);
 	drawFanBlade(240.0f + theta);
+	drawSun();
 }
 
 void drawSky() {
@@ -148,8 +151,9 @@ void drawHouseRoof() {
 }
 
 void drawFanBlade(int _theta) {
-	glPushMatrix();
 	glColor3f(0.0f, 1.0f, 1.0f); //cyan
+
+	glPushMatrix();
 
 	GLfloat translateDist = house_roof_triangle[0][1] - fan_triangle[0][1];
 	glTranslatef(0.0f, translateDist, 0.0f);
@@ -161,6 +165,18 @@ void drawFanBlade(int _theta) {
 	}
 	glEnd();
 
+	glPopMatrix();
+
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+}
+
+void drawSun() {
+	glPushMatrix();
+
+	glTranslatef(-0.6f, 0.6f, 0.0f);
+
+	glColor3f(1.0f, 1.0f, 0.0f); //yellow
+	glutSolidSphere(sunRadius, 100, 100);
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glPopMatrix();
 }
@@ -174,7 +190,9 @@ void keyfunc(unsigned char key, int x, int y)
 		exit(0);
 	}
 	if (key == 32) {
-		fanSpeedIncrement += 10;
+		if (fanSpeedIncrement <= 20) {
+			fanSpeedIncrement += 5;
+		}
 	}
 }
 
