@@ -5,7 +5,7 @@
 
 SUBMIT_URL = https://cs.ycp.edu/marmoset/bluej/SubmitProjectViaBlueJSubmitter
 COURSE_NAME = CS 370
-SEMESTER = Fall 2016
+SEMESTER = Fall 2017
 PROJECT_NUMBER = assign01
 
 all :
@@ -61,4 +61,4 @@ nonexistent :
 # Remove generated files.
 clean : 
 	rm -f *.o *.exe collected-files.txt submit.properties solution.zip
-	rm -f Debug/* CS370*/Debug/*
+	rm -rf Debug/* CS370*/Debug/*
