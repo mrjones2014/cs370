@@ -47,15 +47,15 @@ GLfloat eye[3] = { 2.0f, 2.0f, 2.0f };
 GLfloat at[3] = { 0.0f, 0.0f, 0.0f };
 GLfloat up[3] = { 0.0f, 1.0f, 0.0f };
 
-GLint animationState = -1;
-GLfloat trainMoveScalar = -0.005f;
-GLint TRAIN_Z_OFFSET = 2;
+GLint animationState = 0;
+GLfloat trainMoveScalar = -0.006f;
+GLfloat TRAIN_Z_OFFSET = 2;
 #define NUM_TRACKS 18
 
-GLfloat viewAngle = 2.0f;
+GLfloat viewAngle = 45.0f;
 GLfloat viewAngleIncr = 2.0f;
 
-GLfloat elevationAngle = 45.0f;
+GLfloat elevationAngle = 55.0f;
 GLfloat elevationAngleIncr = 2.0f;
 
 GLfloat radius = 5.0f;
@@ -172,7 +172,7 @@ void drawTower() {
 		glTranslatef(0.0f, 0.0f, -10.0f);
 		glRotatef(0.0f, 0.0f, 0.0f, 0.0f);
 		glScalef(2.5f, 2.5f, 2.5f);
-		glColor3f(0.0f, 0.0f, 1.0f);
+		glColor3f(0.1f, 0.6f, 1.2f);
 		glCallList(CUBE);
 	glPopMatrix();
 
@@ -180,7 +180,7 @@ void drawTower() {
 		glTranslatef(0.0f, 4.5f, -10.0f);
 		glRotatef(0.0f, 0.0f, 0.0f, 0.0f);
 		glScalef(2.0f, 2.0f, 2.0f);
-		glColor3f(0.3f, 0.2f, 0.6f);
+		glColor3f(0.8f, 0.8f, 0.9f);
 		glCallList(CUBE);
 	glPopMatrix();
 
@@ -188,7 +188,7 @@ void drawTower() {
 		glTranslatef(0.0f, 7.5f, -10.0f);
 		glRotatef(0.0f, 0.0f, 0.0f, 0.0f);
 		glScalef(1.0f, 1.0f, 1.0f);
-		glColor3f(1.0f, 0.4f, 1.0f);
+		glColor3f(0.9f, 0.3f, 0.6f);
 		glCallList(CUBE);
 	glPopMatrix();
 }
@@ -196,7 +196,7 @@ void drawTower() {
 void drawTracks() {
 	for (int i = 0; i < NUM_TRACKS; i++) {
 		glPushMatrix();
-			glTranslatef(0.0f, -2.7f, (i - 6.2f));
+			glTranslatef(0.0f, -2.7f, i - 6.2f);
 			glRotatef(0.0f, 0.0f, 0.0f, 0.0f);
 			glCallList(TRACKS);
 		glPopMatrix();
@@ -280,14 +280,12 @@ void reshape(int w, int h)
 // Idle callback
 void idlefunc()
 {
-	if (animationState > 0) {
-		if (trainMoveScalar > 0 && TRAIN_Z_OFFSET > 10) {
-			trainMoveScalar *= -1;
-			glutPostRedisplay();
-		} else if (trainMoveScalar > 0 && TRAIN_Z_OFFSET < -5) {
-			trainMoveScalar *= -1;
-			glutPostRedisplay();
+	if (animationState) {
+		if ((trainMoveScalar > 0 && TRAIN_Z_OFFSET > 10) || (trainMoveScalar < 0 && TRAIN_Z_OFFSET < -5)) {
+			toggleAnimation();
 		}
+		TRAIN_Z_OFFSET += trainMoveScalar;
+ 		glutPostRedisplay();
 	}
 }
 
@@ -383,5 +381,10 @@ void drawWheel() {
 }
 
 void toggleAnimation() {
-	animationState *= -1;
+	if (animationState) {
+		animationState = 0;
+		trainMoveScalar *= -1;
+	} else {
+		animationState = 1;
+	}
 }
