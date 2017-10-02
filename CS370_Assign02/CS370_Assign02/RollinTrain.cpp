@@ -48,7 +48,7 @@ GLfloat at[3] = { 0.0f, 0.0f, 0.0f };
 GLfloat up[3] = { 0.0f, 1.0f, 0.0f };
 
 GLint animationState = 0;
-GLfloat trainMoveScalar = -0.006f;
+GLfloat trainMoveScalar = -0.06f;
 GLfloat TRAIN_Z_OFFSET = 2;
 #define NUM_TRACKS 18
 
