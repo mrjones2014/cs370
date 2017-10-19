@@ -1,0 +1,16 @@
+﻿  house.cpp
+c:\users\mjone\documents\school\cs370\cs370_project\cs370_project\shaderutils.h(20): warning C4996: 'open': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _open. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\corecrt_io.h(514): note: see declaration of 'open'
+c:\users\mjone\documents\school\cs370\cs370_project\cs370_project\shaderutils.h(23): warning C4996: 'lseek': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _lseek. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\corecrt_io.h(501): note: see declaration of 'lseek'
+c:\users\mjone\documents\school\cs370\cs370_project\cs370_project\shaderutils.h(24): warning C4996: 'close': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _close. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\corecrt_io.h(457): note: see declaration of 'close'
+c:\users\mjone\documents\school\cs370\cs370_project\cs370_project\shaderutils.h(43): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(205): note: see declaration of 'fopen'
+c:\users\mjone\documents\school\cs370\cs370_project\cs370_project\walls.h(7): warning C4091: 'typedef ': ignored on left of 'Rect' when no variable is declared
+c:\users\mjone\documents\school\cs370\cs370_project\cs370_project\walls.h(12): warning C4091: 'typedef ': ignored on left of 'TexturedWindow' when no variable is declared
+c:\users\mjone\documents\school\cs370\cs370_project\cs370_project\walls.h(35): warning C4838: conversion from 'double' to 'GLfloat' requires a narrowing conversion
+c:\users\mjone\documents\school\cs370\cs370_project\cs370_project\walls.h(35): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+c:\users\mjone\documents\school\cs370\cs370_project\cs370_project\house.cpp(171): warning C4244: '=': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\mjone\documents\school\cs370\cs370_project\cs370_project\house.cpp(172): warning C4244: '=': conversion from 'int' to 'GLfloat', possible loss of data
+LINK : fatal error LNK1104: cannot open file 'freeglut.lib'

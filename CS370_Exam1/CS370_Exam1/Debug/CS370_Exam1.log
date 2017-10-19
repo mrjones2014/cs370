@@ -1,0 +1,12 @@
+﻿  Diamond.cpp
+c:\users\mjone\documents\school\cs370\cs370_exam1\cs370_exam1\shaderutils.h(20): warning C4996: 'open': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _open. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\corecrt_io.h(514): note: see declaration of 'open'
+c:\users\mjone\documents\school\cs370\cs370_exam1\cs370_exam1\shaderutils.h(23): warning C4996: 'lseek': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _lseek. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\corecrt_io.h(501): note: see declaration of 'lseek'
+c:\users\mjone\documents\school\cs370\cs370_exam1\cs370_exam1\shaderutils.h(24): warning C4996: 'close': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _close. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\corecrt_io.h(457): note: see declaration of 'close'
+c:\users\mjone\documents\school\cs370\cs370_exam1\cs370_exam1\shaderutils.h(43): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(205): note: see declaration of 'fopen'
+c:\users\mjone\documents\school\cs370\cs370_exam1\cs370_exam1\examfunc.cpp(164): warning C4305: '+=': truncation from 'double' to 'float'
+c:\users\mjone\documents\school\cs370\cs370_exam1\cs370_exam1\examfunc.cpp(165): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+  CS370_Exam1.vcxproj -> C:\Users\mjone\Documents\School\CS370\CS370_Exam1\Debug\CS370_Exam1.exe
