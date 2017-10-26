@@ -213,7 +213,7 @@ void display()
 	{
 		xratio = (GLfloat)ww / (GLfloat)hh;
 	}
-	glFrustum(-1.0, 1.0, -1.0, 1.0, 1.5, 20.0);
+	glFrustum(-1.0, 1.0, -1.0, 1.0, 1.5, 20000000000000000000000.0);
 	// Set modelview matrix
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
