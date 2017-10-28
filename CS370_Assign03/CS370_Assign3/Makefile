@@ -9,10 +9,10 @@ OS = $(shell uname -s)
 # Mac OSX
 ifeq ($(OS),Darwin)
 OSDEF = OSX
-LIBS = -framework GLUT -framework OpenGL -framework Cocoa
+LIBS = -lSOIL -framework GLUT -framework OpenGL -framework Cocoa
 else
 OSDEF = Linux
-LIBS = -lGLEW -lglut -lGLU -lGL
+LIBS = -lGLEW -lglut -lSOIL -lGLU -lGL
 endif
 
 CXXFLAGS = -D$(OSDEF) -g -Wall
