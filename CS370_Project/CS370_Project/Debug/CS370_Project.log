@@ -7,11 +7,11 @@ c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\shaderutils
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\corecrt_io.h(457): note: see declaration of 'close'
 c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\shaderutils.h(43): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(205): note: see declaration of 'fopen'
+c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(289): warning C4244: '+=': conversion from 'double' to 'GLfloat', possible loss of data
 c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(290): warning C4244: '+=': conversion from 'double' to 'GLfloat', possible loss of data
-c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(291): warning C4244: '+=': conversion from 'double' to 'GLfloat', possible loss of data
+c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(306): warning C4244: '-=': conversion from 'double' to 'GLfloat', possible loss of data
 c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(307): warning C4244: '-=': conversion from 'double' to 'GLfloat', possible loss of data
-c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(308): warning C4244: '-=': conversion from 'double' to 'GLfloat', possible loss of data
-c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(362): warning C4305: '-=': truncation from 'double' to 'GLfloat'
-c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(458): warning C4244: 'argument': conversion from 'float' to 'GLsizei', possible loss of data
+c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(361): warning C4305: '-=': truncation from 'double' to 'GLfloat'
+c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(457): warning C4244: 'argument': conversion from 'float' to 'GLsizei', possible loss of data
   CS370_Project.vcxproj -> C:\Users\MatJones\Documents\GitHub\cs370\CS370_Project\Debug\CS370_Project.exe
   CS370_Project.vcxproj -> C:\Users\MatJones\Documents\GitHub\cs370\CS370_Project\Debug\CS370_Project.pdb (Full PDB)

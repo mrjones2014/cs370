@@ -236,16 +236,15 @@ void display()
 // Scene render function
 void render_Scene()
 {
-	glUseProgram(defaultShaderProg);
-	glPushMatrix();
-		glCallList(DESK);
-	glPopMatrix();
-
 	glPushMatrix();
 		glUseProgram(textureShaderProg);
 		glBindTexture(GL_TEXTURE_2D, tex_ids[WINDOW_TEX]);
 		glCallList(WINDOW);
 		glUseProgram(defaultShaderProg);
+	glPopMatrix();
+
+	glPushMatrix();
+		glCallList(DESK);
 	glPopMatrix();
 
 	glPushMatrix();
