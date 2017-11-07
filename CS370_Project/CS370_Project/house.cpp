@@ -101,7 +101,7 @@ GLint channels;
 GLint tex_ids[NO_TEXTURE] = { 0, 0 };
 char tex_files[NO_TEXTURE][20] = { "brick.jpg", "hell.jpg" };
 
-GLfloat outlineColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+GLfloat outlineColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 GLfloat wallColors[][4] = {
 		{0.921f, 0.921f, 0.921f, 0.5f},
 		{ 0.921f, 0.921f, 0.921f, 1.0f },
@@ -236,6 +236,7 @@ void display()
 // Scene render function
 void render_Scene()
 {
+	glUseProgram(defaultShaderProg);
 	glPushMatrix();
 		glCallList(DESK);
 	glPopMatrix();
