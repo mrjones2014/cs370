@@ -53,15 +53,4 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
-  <ItemGroup>
-    <Image Include="hell.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="brick.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="space.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
-  </ItemGroup>
 </Project>

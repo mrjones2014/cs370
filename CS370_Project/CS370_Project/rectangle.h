@@ -10,6 +10,13 @@ GLfloat baseCube[][3] = {
         {-1.0f, 1.0f,  1.0f}
 };
 
+GLfloat cube_tex[][2] = {
+	{ 0.0f, -1.0f },
+	{ -1.0f, -1.0f },
+	{ -1.0f, 0.0f },
+	{ 0.0f, 0.0f }
+};
+
 void quad(GLfloat v1[], GLfloat v2[], GLfloat v3[], GLfloat v4[]) {
     glBegin(GL_POLYGON);
     glVertex3fv(v1);
@@ -70,13 +77,13 @@ void rect(GLfloat rect[4][3], GLfloat bodyColor[4], GLfloat outlineColor[4]) {
 	quad(rect[0], rect[1], rect[2], rect[3], bodyColor, outlineColor);
 }
 
-void texCube(GLfloat tex[][2]) {
-	texQuad(baseCube[4], baseCube[7], baseCube[6], baseCube[5], tex);
-	texQuad(baseCube[0], baseCube[1], baseCube[2], baseCube[3], tex);
-	texQuad(baseCube[0], baseCube[3], baseCube[7], baseCube[4], tex);
-	texQuad(baseCube[1], baseCube[5], baseCube[6], baseCube[2], tex);
-	texQuad(baseCube[2], baseCube[6], baseCube[7], baseCube[3], tex);
-	texQuad(baseCube[0], baseCube[4], baseCube[5], baseCube[1], tex);
+void texCube() {
+	texQuad(baseCube[4], baseCube[7], baseCube[6], baseCube[5], cube_tex);
+	texQuad(baseCube[0], baseCube[1], baseCube[2], baseCube[3], cube_tex);
+	texQuad(baseCube[0], baseCube[3], baseCube[7], baseCube[4], cube_tex);
+	texQuad(baseCube[1], baseCube[5], baseCube[6], baseCube[2], cube_tex);
+	texQuad(baseCube[2], baseCube[6], baseCube[7], baseCube[3], cube_tex);
+	texQuad(baseCube[0], baseCube[4], baseCube[5], baseCube[1], cube_tex);
 }
 
 void renderCube()

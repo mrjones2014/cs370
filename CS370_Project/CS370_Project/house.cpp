@@ -38,7 +38,7 @@ GLfloat theta = 0;
 unsigned int time = 0;
 GLint lasttime = 0;
 GLint fpstime = 0;
-GLint fps = 60;
+GLint fps = 30;
 GLboolean jumpHold = false;
 GLboolean jumpAnim = false;
 GLfloat jumpHeight = 0.3f;
@@ -79,9 +79,9 @@ void create_lists();
 bool load_textures();
 unsigned char* load_background(GLchar* imageFile);
 void draw_background(unsigned char* image);
+void draw_sprite();
 
 void tex_walls();
-void tex_window();
 
 // DISPLAY LIST IDS
 #define WALLS 1
@@ -90,16 +90,35 @@ void tex_window();
 #define MIRROR 4
 #define DOOR 5
 #define CARPET 6
+#define BLINDS 7
+#define PAINTING 8
 
 #define WALL_TEX 0
 #define WINDOW_TEX 1
-#define NO_TEXTURE 2
+#define DOOR_TEX 2
+#define PAINTING_TEX 3
+#define BLINDS_TEX 4
+#define WOOD_TEX 5
+#define CARPET_TEX 6
+#define SPRITE_TEX 7
+#define SPRITE_TOP_TEX 8
+#define NO_TEXTURE 9
 
 unsigned char* spaceImg;
 GLint channels;
 
-GLint tex_ids[NO_TEXTURE] = { 0, 0 };
-char tex_files[NO_TEXTURE][20] = { "brick.jpg", "hell.jpg" };
+GLint tex_ids[NO_TEXTURE] = { 0,0,0,0,0,0,0,0,0, };
+char tex_files[NO_TEXTURE][30] = { 
+	"brick.jpg", 
+	"world.jpg", 
+	"door.jpg", 
+	"esao_andrews_painting.jpg", 
+	"blinds.jpg", 
+	"wood.jpg", 
+	"carpet.jpg",
+	"sprite.bmp",
+	"sprite_top.bmp"
+};
 
 GLfloat outlineColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 GLfloat wallColors[][4] = {
@@ -109,13 +128,6 @@ GLfloat wallColors[][4] = {
 		{0.921f, 0.0f, 0.0f, 1.0f },
 		{0.047f, 0.0f, 0.921f, 1.0f },
 		{0.047f, 0.0f, 0.921f, 1.0f }
-};
-
-GLfloat wall_tex[][2] = {
-	{0.0f, -1.0f},
-	{-1.0f, -1.0f},
-	{-1.0f, 0.0f},
-	{0.0f, 0.0f}
 };
 
 GLfloat deskColor[4] = { 1.0f, 0.894f, 0.058f, 1.0f };
@@ -131,10 +143,31 @@ GLfloat front_wall[][3] = { { -4.0f, 2.0f, 4.0f },{ 4.0f, 2.0f, 4.0f },{ 4.0f, -
 GLfloat right_wall[][3] = { { -4.0f, 2.0f, 4.0f },{ -4.0f, 2.0f, -4.0f },{ -4.0f, -2.0f, -4.0f },{ -4.0f, -2.0f, 4.0f } };
 GLfloat left_wall[][3] = { { 4.0f, 2.0f, 4.0f },{ 4.0f, 2.0f, -4.0f },{ 4.0f, -2.0f, -4.0f },{ 4.0f, -2.0f, 4.0f } };
 
+GLboolean blindsAnim = false;
+GLint blinds_state_incr = 1;
+GLint blinds_state = 0;
+GLfloat blinds_transition_states[5][2] = {
+	{1.3, 0.2},
+	{1.0, 0.4},
+	{0.7, 0.6},
+	{0.4, 0.8},
+	{0.1, 1.1}
+};
+
+GLUquadricObj* spriteCan;
+GLUquadricObj* spriteTop;
+
+
 int main(int argc, char *argv[])
 {
 	// Initialize GLUT
 	glutInit(&argc, argv);
+	spriteCan = gluNewQuadric();
+	gluQuadricDrawStyle(spriteCan, GLU_FILL);
+	gluQuadricNormals(spriteCan, GLU_SMOOTH);
+	spriteTop = gluNewQuadric();
+	gluQuadricDrawStyle(spriteTop, GLU_FILL);
+	gluQuadricNormals(spriteTop, GLU_SMOOTH);
 
 	// Initialize the window with double buffering and RGB colors
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
@@ -172,6 +205,8 @@ int main(int argc, char *argv[])
 	// Load textures
 	if (!load_textures())
 	{
+		printf("Error loading textures.\n\n");
+		system("pause");
 		exit(0);
 	}
 
@@ -244,20 +279,47 @@ void render_Scene()
 	glPopMatrix();
 
 	glPushMatrix();
+		glUseProgram(textureShaderProg);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[BLINDS_TEX]);
+		glTranslatef(0.0f, blinds_transition_states[blinds_state][0], 0.0f);
+		glScalef(1.0f, blinds_transition_states[blinds_state][1], 1.0f);
+		glCallList(BLINDS);
+		glUseProgram(defaultShaderProg);
+	glPopMatrix();
+
+	glPushMatrix();
+		glUseProgram(textureShaderProg);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[WOOD_TEX]);
 		glCallList(DESK);
+		glUseProgram(defaultShaderProg);
 	glPopMatrix();
 
 	glPushMatrix();
-		glCallList(MIRROR);
+		glCallList(MIRROR); // not a mirror yet
 	glPopMatrix();
 
 	glPushMatrix();
+		glUseProgram(textureShaderProg);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[DOOR_TEX]);
 		glCallList(DOOR);
+		glUseProgram(defaultShaderProg);
 	glPopMatrix();
 
 	glPushMatrix();
+		glUseProgram(textureShaderProg);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[CARPET_TEX]);
 		glCallList(CARPET);
+		glUseProgram(defaultShaderProg);
 	glPopMatrix();
+
+	glPushMatrix();
+		glUseProgram(textureShaderProg);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[PAINTING_TEX]);
+		glCallList(PAINTING);
+		glUseProgram(defaultShaderProg);
+	glPopMatrix();
+
+	draw_sprite();
 
 	glPushMatrix(); // walls; don't draw roof if in space
 		tex_walls();
@@ -266,15 +328,7 @@ void render_Scene()
 	glPopMatrix();
 }
 
-// Keyboard callback
-void keyfunc(unsigned char key, int x, int y)
-{
-	// <esc> quits
-	if (key == 27)
-	{
-		exit(0);
-	}
-
+void move_helper(unsigned char key) {
 	if (key == 'a')
 	{
 		theta -= 15;
@@ -284,7 +338,7 @@ void keyfunc(unsigned char key, int x, int y)
 		theta += 15;
 	}
 	if (key == 'w')
-	{ 
+	{
 
 		eye[X] += cos(DEG2RAD * theta) * 0.1f;
 		eye[Z] += sin(DEG2RAD * theta) * 0.1f;
@@ -318,11 +372,25 @@ void keyfunc(unsigned char key, int x, int y)
 			eye[Z] = -1.25f;
 		}
 	}
+}
+
+// Keyboard callback
+void keyfunc(unsigned char key, int x, int y)
+{
+	// <esc> quits
+	if (key == 27)
+	{
+		exit(0);
+	}
+	if (key == 'w' || key == 's' || key == 'a' || key == 'd') {
+		move_helper(key);
+	}
 	else if (key == ' ') {
 		jumpHeight = jumpHeightMax;
 		jumpHold = true;
 		jumpAnim = true;
 	}
+	else if (key == 'b') blindsAnim = true;
 	glutPostRedisplay();
 }
 
@@ -330,7 +398,7 @@ void keyfunc(unsigned char key, int x, int y)
 void idlefunc()
 {
 	time = glutGet(GLUT_ELAPSED_TIME);
-	if (time - lasttime > 35000.0f / fps) {
+	if (time - lasttime > 350000.0f / fps) {
 		jumpHold = false;
 		lasttime = time;
 	}
@@ -351,6 +419,7 @@ void idlefunc()
 				at[Y] = eyeMinY;
 				up[Y] = upMinY;
 				jumpAnim = false;
+				jumpHold = false;
 				gravity_acceleration = gravity;
 			}
 		}
@@ -359,6 +428,33 @@ void idlefunc()
 			at[Y] += jumpHeight * 0.8f;
 			up[Y] += jumpHeight;
 			jumpHeight -= 0.01;
+		}
+		glutPostRedisplay();
+	}
+
+	if (eye[Y] < eyeMinY || at[Y] < atMinY || up[Y] < upMinY) {
+		eye[Y] = eyeMinY;
+		at[Y] = eyeMinY;
+		up[Y] = upMinY;
+		jumpAnim = false;
+		jumpHold = false;
+		gravity_acceleration = gravity;
+		glutPostRedisplay();
+	}
+
+	if (blindsAnim) {
+		if (time - lasttime > 1000 / fps) {
+			blinds_state += blinds_state_incr;
+			if (blinds_state == 5) {
+				blinds_state = 4;
+				blinds_state_incr *= -1;
+				blindsAnim = false;
+			}
+			else if (blinds_state == -1) {
+				blinds_state = 0;
+				blinds_state_incr *= -1;
+				blindsAnim = false;
+			}
 		}
 		glutPostRedisplay();
 	}
@@ -377,15 +473,38 @@ void reshape(int w, int h)
 
 void create_lists() {
 	glNewList(DESK, GL_COMPILE);
-		glTranslatef(0.0f, -1.9f, -3.25f);
-		glScalef(2.2f, 1.5f, 1.0f);
-		renderCube(deskColor, outlineColor);
+		glPushMatrix();
+			glTranslatef(0.0f, -1.0f, -3.25f);
+			glScalef(2.2f, 0.075f, 1.0f);
+			texCube();
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(-1.75f, -1.5f, -3.25f);
+			glScalef(0.08f, 0.5f, 1.0f);
+			texCube();
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(1.75f, -1.5f, -3.25f);
+			glScalef(0.08f, 0.5f, 1.0f);
+			texCube();
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(0.0f, -1.5f, -4.25f);
+			glScalef(1.8f, 0.5f, 1.0f);
+			texCube();
+		glPopMatrix();
 	glEndList();
 
 	glNewList(WINDOW, GL_COMPILE);
 		glTranslatef(3.9f, 0.25f, 0.0f);
-		glScalef(0.01f, 1.0f, 1.78f);
-		texCube(wall_tex);
+		glScalef(0.01f, 1.3f, 2.0f);
+		texCube();
+	glEndList();
+
+	glNewList(BLINDS, GL_COMPILE);
+	glTranslatef(3.88f, 0.25f, 0.0f);
+		glScalef(0.01f, 1.3f, 2.0f);
+		texCube();
 	glEndList();
 
 	glNewList(MIRROR, GL_COMPILE);
@@ -395,15 +514,25 @@ void create_lists() {
 	glEndList();
 
 	glNewList(DOOR, GL_COMPILE);
-		glTranslatef(2.25f, -0.25f, 4.0f);
-		glScalef(1.0f, 1.9f, 0.01f);
-		renderCube(doorColor, outlineColor);
+		glTranslatef(2.25f, -0.1f, 4.0f);
+		glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
+		glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+		glScalef(1.9f, 1.0f, 0.01f);
+		texCube();
 	glEndList();
 
 	glNewList(CARPET, GL_COMPILE);
 		glTranslatef(0.0f, -2.0f, 0.0f);
-		glScalef(2.5f, 0.01f, 2.5f);
-		renderCube(carpetColor, outlineColor);
+		glScalef(3.5f, 0.01f, 3.5f);
+		texCube();
+	glEndList();
+
+	glNewList(PAINTING, GL_COMPILE);
+		glTranslatef(-1.25f, 0.25f, 3.9f);
+		glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+		glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+		glScalef(0.01f, 1.5f, 1.25f);
+		texCube();
 	glEndList();
 }
 
@@ -412,7 +541,7 @@ bool load_textures() {
 	{
 		// TODO: Load images
 		tex_ids[i] = SOIL_load_OGL_texture(tex_files[i], SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y);
-
+		
 		// Set texture properties if successfully loaded
 		if (tex_ids[i] != 0)
 		{
@@ -471,24 +600,43 @@ void tex_walls() {
 	glBindTexture(GL_TEXTURE_2D, tex_ids[WALL_TEX]);
 
 	glBegin(GL_POLYGON);
-	texQuad(left_wall[0], left_wall[1], left_wall[2], left_wall[3], wall_tex);
+	texQuad(left_wall[0], left_wall[1], left_wall[2], left_wall[3], cube_tex);
 	glEnd();
 
 	glBegin(GL_POLYGON);
-	texQuad(right_wall[0], right_wall[1], right_wall[2], right_wall[3], wall_tex);
+	texQuad(right_wall[0], right_wall[1], right_wall[2], right_wall[3], cube_tex);
 	glEnd();
 
 	glBegin(GL_POLYGON);
-	texQuad(front_wall[0], front_wall[1], front_wall[2], front_wall[3], wall_tex);
+	texQuad(front_wall[0], front_wall[1], front_wall[2], front_wall[3], cube_tex);
 	glEnd();
 
 	glBegin(GL_POLYGON);
-	texQuad(back_wall[0], back_wall[1], back_wall[2], back_wall[3], wall_tex);
+	texQuad(back_wall[0], back_wall[1], back_wall[2], back_wall[3], cube_tex);
 	glEnd();
 	glUseProgram(defaultShaderProg);
 	glPopMatrix();
 }
 
-void tex_window() {
+void draw_sprite() {
+	glUseProgram(textureShaderProg);
 
+	glPushMatrix();
+		glBindTexture(GL_TEXTURE_2D, tex_ids[SPRITE_TEX]);
+		gluQuadricTexture(spriteCan, GL_TRUE);
+		glTranslatef(1.75f, -0.78f, -2.25f);
+		glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+		glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+		gluCylinder(spriteCan, 0.1f, 0.1f, 0.5f, 20, 20);
+	glPopMatrix();
+
+	glPushMatrix();
+		glBindTexture(GL_TEXTURE_2D, tex_ids[SPRITE_TOP_TEX]);
+		gluQuadricTexture(spriteTop, GL_TRUE);
+		glTranslatef(1.75f, -0.275f, -2.25f);
+		glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+		gluDisk(spriteTop, 0.0f, 0.1f, 35, 35);
+	glPopMatrix(); 
+
+	glUseProgram(defaultShaderProg);
 }
