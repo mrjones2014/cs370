@@ -53,18 +53,32 @@ void quad(GLfloat v1[], GLfloat v2[], GLfloat v3[], GLfloat v4[], GLfloat bodyCo
     glEnd();
 }
 
-void texQuad(GLfloat v1[], GLfloat v2[], GLfloat v3[], GLfloat v4[], GLfloat tex[][2]) {
+void texQuad(GLfloat v1[], GLfloat v2[], GLfloat v3[], GLfloat v4[]) {
 	glBegin(GL_POLYGON);
-	glTexCoord2f(tex[0][0], tex[0][1]);
+	glTexCoord2f(cube_tex[0][0], cube_tex[0][1]);
 	glVertex3fv(v1);
-	glTexCoord2f(tex[1][0], tex[1][1]);
+	glTexCoord2f(cube_tex[1][0], cube_tex[1][1]);
 	glVertex3fv(v2);
-	glTexCoord2f(tex[2][0], tex[2][1]);
+	glTexCoord2f(cube_tex[2][0], cube_tex[2][1]);
 	glVertex3fv(v3);
-	glTexCoord2f(tex[3][0], tex[3][1]);
+	glTexCoord2f(cube_tex[3][0], cube_tex[3][1]);
 	glVertex3fv(v4);
 	glEnd();
 }
+
+void texQuad(GLfloat quad[][3]) {
+	glBegin(GL_POLYGON);
+	glTexCoord2f(cube_tex[0][0], cube_tex[0][1]);
+	glVertex3fv(quad[0]);
+	glTexCoord2f(cube_tex[1][0], cube_tex[1][1]);
+	glVertex3fv(quad[1]);
+	glTexCoord2f(cube_tex[2][0], cube_tex[2][1]);
+	glVertex3fv(quad[2]);
+	glTexCoord2f(cube_tex[3][0], cube_tex[3][1]);
+	glVertex3fv(quad[3]);
+	glEnd();
+}
+
 void rect(GLfloat rect[4][3]) {
 	quad(rect[0], rect[1], rect[2], rect[3]);
 }
@@ -78,12 +92,12 @@ void rect(GLfloat rect[4][3], GLfloat bodyColor[4], GLfloat outlineColor[4]) {
 }
 
 void texCube() {
-	texQuad(baseCube[4], baseCube[7], baseCube[6], baseCube[5], cube_tex);
-	texQuad(baseCube[0], baseCube[1], baseCube[2], baseCube[3], cube_tex);
-	texQuad(baseCube[0], baseCube[3], baseCube[7], baseCube[4], cube_tex);
-	texQuad(baseCube[1], baseCube[5], baseCube[6], baseCube[2], cube_tex);
-	texQuad(baseCube[2], baseCube[6], baseCube[7], baseCube[3], cube_tex);
-	texQuad(baseCube[0], baseCube[4], baseCube[5], baseCube[1], cube_tex);
+	texQuad(baseCube[4], baseCube[7], baseCube[6], baseCube[5]);
+	texQuad(baseCube[0], baseCube[1], baseCube[2], baseCube[3]);
+	texQuad(baseCube[0], baseCube[3], baseCube[7], baseCube[4]);
+	texQuad(baseCube[1], baseCube[5], baseCube[6], baseCube[2]);
+	texQuad(baseCube[2], baseCube[6], baseCube[7], baseCube[3]);
+	texQuad(baseCube[0], baseCube[4], baseCube[5], baseCube[1]);
 }
 
 void renderCube()
