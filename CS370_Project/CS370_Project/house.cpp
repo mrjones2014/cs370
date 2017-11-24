@@ -86,6 +86,7 @@ void draw_walls();
 #define PAINTING 8
 #define BOWL 9
 #define WINDOW_BORDER 10
+#define FRUIT 11
 
 
 #define WALL_TEX 0
@@ -99,19 +100,10 @@ void draw_walls();
 #define SPRITE_TOP_TEX 8
 #define FLOOR_TEX 9
 #define ROOF_TEX 10 
-#define NO_TEXTURE 11
+#define BOWL_TEX 11
+#define NO_TEXTURE 12
 
-
-GLenum lights[4] = { GL_LIGHT0, GL_LIGHT1, GL_LIGHT2, GL_LIGHT3 };
-
-// Light0 (point) Parameters
-GLfloat light0_pos[] = { 0.0f, 5.0f, 0.0f, 1.0f };
-
-
-unsigned char* spaceImg;
-GLint channels;
-
-GLint tex_ids[NO_TEXTURE] = { 0,0,0,0,0,0,0,0,0,0,0 };
+GLint tex_ids[NO_TEXTURE] = { 0,0,0,0,0,0,0,0,0,0,0,0 };
 char tex_files[NO_TEXTURE][30] = { 
 	"log.jpg", 
 	"world.jpg", 
@@ -123,7 +115,8 @@ char tex_files[NO_TEXTURE][30] = {
 	"sprite.bmp",
 	"sprite_top.bmp",
 	"floor.jpg",
-	"roof.jpg"
+	"roof.jpg",
+	"bowl.bmp"
 };
 
 GLfloat outlineColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
@@ -282,15 +275,8 @@ void display()
 // Scene render function
 void render_Scene()
 {
-	set_AmbientLight(white_light.ambient);
-	set_PointLight(GL_LIGHT0, &white_light, light0_pos);
-	glUseProgram(lightShaderProg);
-	glUniform1i(numLights_param, numLights);
-
-	glCallList(BOWL);
-
 	glUseProgram(defaultShaderProg);
-	
+
 	glPushMatrix();
 		glCallList(WINDOW_BORDER);
 	glEndList();
@@ -299,7 +285,16 @@ void render_Scene()
 		glCallList(MIRROR); // not a mirror yet
 	glPopMatrix();
 
+	glPushMatrix();
+		glCallList(FRUIT);
+	glPopMatrix();
+
 	glUseProgram(textureShaderProg);
+
+	glPushMatrix();
+		glBindTexture(GL_FRONT_AND_BACK, BOWL_TEX);
+		glCallList(BOWL);
+	glPopMatrix();
 
 	glPushMatrix();
 		glBindTexture(GL_TEXTURE_2D, tex_ids[WINDOW_TEX]);
@@ -521,14 +516,31 @@ void create_lists() {
 	glEndList();
 
 	glNewList(BOWL, GL_COMPILE);
+		gluQuadricTexture(bowl, GL_TRUE);
+		glTranslatef(-1.5f, -0.67f, -2.5f);
+		glScalef(0.5f, 0.5f, 0.5f);
+		glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+		gluCylinder(bowl, 1.25f, 0.0f, .5f, 10, 10);
+	glEndList();
+
+	glNewList(FRUIT, GL_COMPILE);
 		glPushMatrix();
-			glPushAttrib(GL_CURRENT_BIT);
-				set_material(GL_FRONT_AND_BACK, &cyanRubber);
-				glTranslatef(-1.5f, -0.67f, -2.5f);
-				glScalef(0.5f, 0.5f, 0.5f);
-				glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
-				gluCylinder(bowl, 1.25f, 0.0f, .5f, 10, 10);
-			glPopAttrib();
+			glTranslatef(0.1f, 0.0f, 0.0f);
+			glTranslatef(-1.5f, -0.67f, -2.5f);
+			glColor3f(1.0f, 0.1f, 0.1f);
+			glutSolidSphere(0.1f, 20, 20);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(-0.1f, 0.0f, 0.0f);
+			glTranslatef(-1.5f, -0.67f, -2.5f);
+			glColor3f(1.0f, 0.96f, 0.31f);
+			glutSolidSphere(0.1f, 20, 20);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(0.05f, 0.0f, 0.05f);
+			glTranslatef(-1.5f, -0.67f, -2.5f);
+			glColor3f(1.0f, 0.55f, 0.0f);
+			glutSolidSphere(0.1f, 20, 20);
 		glPopMatrix();
 	glEndList();
 }
