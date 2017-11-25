@@ -1,6 +1,18 @@
 // CS370 - Fall 2014
 // Final Project
 
+
+// CONTROLS (case insensitive) 
+/*
+ * W - move forward
+ * S - move backward 
+ * A - strafe left
+ * D - strafe right 
+ * E - "escape the room" (open the door)
+ * F - toggle the fan on/off
+ * B - toggle the blinds open/closed
+ * move mouse - look around
+ */
 // implemented movement with WASD strafe and mouse look
 
 #ifdef OSX
@@ -48,6 +60,7 @@ unsigned int time = 0;
 GLfloat lasttime = 0;
 GLfloat fpstime = 0;
 GLfloat fps = 30;
+GLboolean door_open = false;
 GLfloat fan_theta = 0.0f;
 GLboolean fanAnim = false;
 GLboolean blindsAnim = false;
@@ -97,7 +110,7 @@ void create_lists();
 bool load_textures();
 void draw_sprite();
 void draw_fan();
-
+void draw_door();
 void draw_walls();
 
 // DISPLAY LIST IDS
@@ -105,13 +118,13 @@ void draw_walls();
 #define DESK 2
 #define WINDOW 3
 #define MIRROR 4
-#define DOOR 5
-#define CARPET 6
-#define BLINDS 7
-#define PAINTING 8
-#define BOWL 9
-#define WINDOW_BORDER 10
-#define FRUIT 11
+#define CARPET 5
+#define BLINDS 6
+#define PAINTING 7
+#define BOWL 8
+#define WINDOW_BORDER 9
+#define FRUIT 10
+#define BRICK_BEHIND_DOOR 11
 
 
 #define WALL_TEX 0
@@ -126,9 +139,10 @@ void draw_walls();
 #define FLOOR_TEX 9
 #define ROOF_TEX 10 
 #define BOWL_TEX 11
-#define NO_TEXTURE 12
+#define BRICK_TEX 12
+#define NO_TEXTURE 13
 
-GLint tex_ids[NO_TEXTURE] = { 0,0,0,0,0,0,0,0,0,0,0,0 };
+GLint tex_ids[NO_TEXTURE] = { 0,0,0,0,0,0,0,0,0,0,0,0,0 };
 char tex_files[NO_TEXTURE][30] = { 
 	"log.jpg", 
 	"world.jpg", 
@@ -141,24 +155,12 @@ char tex_files[NO_TEXTURE][30] = {
 	"sprite_top.bmp",
 	"floor.jpg",
 	"roof.jpg",
-	"bowl.bmp"
+	"bowl.bmp",
+	"brick.jpg"
 };
 
 GLfloat outlineColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-GLfloat wallColors[][4] = {
-		{0.921f, 0.921f, 0.921f, 0.5f},
-		{ 0.921f, 0.921f, 0.921f, 1.0f },
-		{0.921f, 0.0f, 0.0f, 1.0f },
-		{0.921f, 0.0f, 0.0f, 1.0f },
-		{0.047f, 0.0f, 0.921f, 1.0f },
-		{0.047f, 0.0f, 0.921f, 1.0f }
-};
-
-GLfloat deskColor[4] = { 1.0f, 0.894f, 0.058f, 1.0f };
-GLfloat windowColor[4] = { 0.0f, 0.941f, 0.047f, 1.0f };
 GLfloat mirrorColor[4] = { 0.780f, 0.780f, 0.780f, 1.0f };
-GLfloat doorColor[4] = { 0.490f, 0.345f, 0.231f, 1.0f };
-GLfloat carpetColor[4] = { 1.0f, 0.121f, 0.956f, 1.0f };
 
 GLfloat roof[][3] = { { -4.0f, 3.25f, -4.0f },{ 4.0f, 3.25f, -4.0f },{ 4.0f, 3.25f, 4.0f },{ -4.0f, 3.25f, 4.0f } };
 GLfloat floor_rect[][3] = { { -4.0f, -2.0f, -4.0f },{ 4.0f, -2.0f, -4.0f },{ 4.0f, -2.0f, 4.0f },{ -4.0f, -2.0f, 4.0f } };
@@ -349,8 +351,8 @@ void render_Scene()
 	glPopMatrix();
 
 	glPushMatrix();
-		glBindTexture(GL_TEXTURE_2D, tex_ids[DOOR_TEX]);
-		glCallList(DOOR);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[BRICK_TEX]);
+		glCallList(BRICK_BEHIND_DOOR);
 	glPopMatrix();
 
 	glPushMatrix();
@@ -364,6 +366,7 @@ void render_Scene()
 	glPopMatrix();
 
 	draw_sprite();
+	draw_door();
 	draw_walls();
 }
 
@@ -403,6 +406,8 @@ void move_helper(unsigned char key) {
 	if (eye[Z] < -0.75) {
 		eye[Z] = -0.75f;
 	}
+
+	glutPostRedisplay();
 }
 
 // Keyboard callback
@@ -428,7 +433,10 @@ void keyfunc(unsigned char _key, int x, int y)
 	else if (key == 'f') {
 		fanAnim = !fanAnim;
 	}
-	glutPostRedisplay();
+	else if (key == 'e') {
+		door_open = !door_open;
+		glutPostRedisplay();
+	}
 }
 
 // Look callback 
@@ -547,7 +555,7 @@ void create_lists() {
 		renderCube(mirrorColor, outlineColor);
 	glEndList();
 
-	glNewList(DOOR, GL_COMPILE);
+	glNewList(BRICK_BEHIND_DOOR, GL_COMPILE);
 		glTranslatef(2.25f, -0.1f, 4.0f);
 		glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
 		glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
@@ -685,4 +693,19 @@ void draw_sprite() {
 		glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
 		gluDisk(spriteTop, 0.0f, 0.1f, 35, 35);
 	glPopMatrix(); 
+}
+
+void draw_door() {
+	glPushMatrix();
+		glBindTexture(GL_TEXTURE_2D, tex_ids[DOOR_TEX]);
+		glTranslatef(2.25f, -0.1f, 3.99f);
+		glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
+		if (door_open) {
+			glTranslatef(-0.75f, 0.0f, 1.0f);
+			glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
+		}
+		glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+		glScalef(1.9f, 1.0f, 0.01f);
+		texCube();
+	glPopMatrix();
 }
