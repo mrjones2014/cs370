@@ -1,6 +1,8 @@
 // CS370 - Fall 2014
 // Final Project
 
+// implemented movement with WASD strafe and mouse look
+
 #ifdef OSX
 #include <GLUT/glut.h>
 #else
@@ -35,13 +37,35 @@ GLfloat up[3] = { 0.0f,1.0f,0.0f };
 
 // CAMERA MANIPULATION VARIABLES
 GLfloat theta = 0;
+GLfloat eyeMinY = 0.1f;
+GLfloat atMinY = -1.15f;
+GLfloat atMaxY = 2.0f;
+GLfloat start_y = NULL;
+GLfloat start_x = NULL;
+
+// ANIMATION VARIABLES
 unsigned int time = 0;
 GLfloat lasttime = 0;
 GLfloat fpstime = 0;
 GLfloat fps = 30;
-GLfloat eyeMinY = 0.1f;
-GLfloat atMinY = -1.25f;
-GLfloat start_y = 0.0;
+GLfloat fan_theta = 0.0f;
+GLboolean fanAnim = false;
+GLboolean blindsAnim = false;
+GLint blinds_state_incr = -1;
+GLint blinds_state = 9;
+GLfloat blinds_transition_states[10][2] = {
+	{ 1.45, 0.1 },
+	{ 1.3, 0.2 },
+	{ 1.15, 0.3 },
+	{ 1.0, 0.4 },
+	{ 0.85, 0.5 },
+	{ 0.7, 0.6 },
+	{ 0.55, 0.7 },
+	{ 0.4, 0.8 },
+	{ 0.25, 0.9 },
+	{ 0.025, 1.05 }
+};
+
 
 // Global screen dimensions
 GLint ww, hh;
@@ -72,6 +96,7 @@ void reshape(int w, int h);
 void create_lists();
 bool load_textures();
 void draw_sprite();
+void draw_fan();
 
 void draw_walls();
 
@@ -142,25 +167,10 @@ GLfloat front_wall[][3] = { { -4.0f, 3.25f, 4.0f },{ 4.0f, 3.25f, 4.0f },{ 4.0f,
 GLfloat right_wall[][3] = { { -4.0f, 3.25f, 4.0f },{ -4.0f, 3.25f, -4.0f },{ -4.0f, -2.0f, -4.0f },{ -4.0f, -2.0f, 4.0f } };
 GLfloat left_wall[][3] = { { 4.0f, 3.25f, 4.0f },{ 4.0f, 3.25f, -4.0f },{ 4.0f, -2.0f, -4.0f },{ 4.0f, -2.0f, 4.0f } };
 
-GLboolean blindsAnim = false;
-GLint blinds_state_incr = -1;
-GLint blinds_state = 9;
-GLfloat blinds_transition_states[10][2] = {
-	{1.45, 0.1},
-	{1.3, 0.2},
-	{1.15, 0.3},
-	{1.0, 0.4},
-	{0.85, 0.5},
-	{0.7, 0.6},
-	{0.55, 0.7},
-	{0.4, 0.8},
-	{0.25, 0.9},
-	{0.025, 1.05}
-};
-
 GLUquadricObj* spriteCan;
 GLUquadricObj* spriteTop;
 GLUquadricObj* bowl;
+GLUquadricObj* fanCenter;
 
 
 int main(int argc, char *argv[])
@@ -176,6 +186,9 @@ int main(int argc, char *argv[])
 	bowl = gluNewQuadric();
 	gluQuadricDrawStyle(bowl, GLU_FILL);
 	gluQuadricNormals(bowl, GLU_SMOOTH);
+	fanCenter = gluNewQuadric();
+	gluQuadricDrawStyle(fanCenter, GLU_FILL);
+	gluQuadricNormals(fanCenter, GLU_SMOOTH);
 
 	// Initialize the window with double buffering and RGB colors
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
@@ -185,6 +198,8 @@ int main(int argc, char *argv[])
 
 	// Create window
 	glutCreateWindow("House");
+
+	glutSetCursor(GLUT_CURSOR_NONE);
 
 #ifndef OSX
 	// Initialize GLEW - MUST BE DONE AFTER CREATING GLUT WINDOW
@@ -287,6 +302,26 @@ void render_Scene()
 
 	glPushMatrix();
 		glCallList(FRUIT);
+		glPushMatrix();
+			glTranslatef(0.22f, 0.0f, 0.0f);
+			glCallList(FRUIT);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(0.22f, 0.0f, -0.22f);
+			glCallList(FRUIT);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(-0.22f, 0.0f, -0.22f);
+			glCallList(FRUIT);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(-0.22f, 0.0f, 0.0f);
+			glCallList(FRUIT);
+		glPopMatrix();
+	glPopMatrix();
+
+	glPushMatrix();
+		draw_fan();
 	glPopMatrix();
 
 	glUseProgram(textureShaderProg);
@@ -371,13 +406,15 @@ void move_helper(unsigned char key) {
 }
 
 // Keyboard callback
-void keyfunc(unsigned char key, int x, int y)
+void keyfunc(unsigned char _key, int x, int y)
 {
 	// <esc> quits
-	if (key == 27)
+	if (_key == 27)
 	{
 		exit(0);
 	}
+	unsigned char key = tolower(_key);
+
 	if (key == 'w' || key == 's' || key == 'a' || key == 'd') {
 		move_helper(key);
 	}
@@ -388,20 +425,33 @@ void keyfunc(unsigned char key, int x, int y)
 		}
 		else blindsAnim = true;
 	}
+	else if (key == 'f') {
+		fanAnim = !fanAnim;
+	}
 	glutPostRedisplay();
 }
 
 // Look callback 
 void lookfunc(int x, int y)
 {
-	theta = x - (theta * .005);
+	if (start_y == NULL) start_y = y;
+	if (start_x == NULL) start_x = x;
 
-	GLint dx, dy;
+	// reset cursor position to center
+	if (x <= 10 || x >= 490 || y < 10 || y > 490) {
+		start_x = 250;
+		start_y = 250;
+		glutWarpPointer(250, 250);
+	}
 
-	dy = start_y - y;
-	start_y = y;
-	at[Y] += dy * .005;
+	theta -= start_x - x;
+	if (abs((int)start_y - y) < 200) at[Y] += (start_y - y) * 0.005; // to avoid camera jumping bug where y is set before start_y on cursor reset
+
 	if (at[Y] < atMinY) at[Y] = atMinY;
+	else if (at[Y] > atMaxY) at[Y] = atMaxY;
+
+	start_y = y;
+	start_x = x;
 	
 	glutPostRedisplay();
 }
@@ -425,6 +475,10 @@ void idlefunc()
 			}
 			lasttime = time;
 		}
+		glutPostRedisplay();
+	}
+	if (fanAnim) {
+		fan_theta += 0.1f;
 		glutPostRedisplay();
 	}
 }
@@ -537,7 +591,7 @@ void create_lists() {
 			glutSolidSphere(0.1f, 20, 20);
 		glPopMatrix();
 		glPushMatrix();
-			glTranslatef(0.05f, 0.0f, 0.05f);
+			glTranslatef(0.0f, 0.0f, 0.1f);
 			glTranslatef(-1.5f, -0.67f, -2.5f);
 			glColor3f(1.0f, 0.55f, 0.0f);
 			glutSolidSphere(0.1f, 20, 20);
@@ -568,6 +622,28 @@ bool load_textures() {
 		}
 	}
 	return true;
+}
+
+void draw_fan() {
+	glPushMatrix();
+			glTranslatef(0.0f, 3.0f, 0.0f);
+			glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+			glColor3f(1.0f, 0.96f, 0.31f);
+			gluDisk(fanCenter, 0.0f, 0.5f, 20, 20);
+		glPopMatrix();
+		glPushMatrix();
+			glColor3f(0.0f, 0.0f, 0.0f);
+			glTranslatef(0.0f, 3.1f, 0.0f);
+			glRotatef(fan_theta, 0.0f, 1.0f, 0.0f);
+			glScalef(1.5f, 0.01f, 0.1f);
+			renderCube();
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(0.0f, 3.1f, 0.0f);
+			glRotatef(90.0f + fan_theta, 0.0f, 1.0f, 0.0f);
+			glScalef(1.5f, 0.01f, 0.1f);
+			renderCube();
+		glPopMatrix();
 }
 
 void draw_walls() {
