@@ -43,11 +43,12 @@
 #define DEG2RAD (3.14159f/180.0f)
 
 // Global camera vectors
-GLfloat eye[3] = { 0.0f,0.1f,1.0f };
-GLfloat at[3] = { 0.0f,0.0f,0.0f };
+GLfloat eye[3] = { 0.0f,0.75f,1.0f };
+GLfloat at[3] = { 0.0f,0.5f,0.0f };
 GLfloat up[3] = { 0.0f,1.0f,0.0f };
 
 // CAMERA MANIPULATION VARIABLES
+bool keys[256];
 GLfloat theta = 0;
 GLfloat eyeMinY = 0.1f;
 GLfloat atMinY = -1.15f;
@@ -103,6 +104,7 @@ GLint texSampler;
 void display();
 void render_Scene();
 void keyfunc(unsigned char key, int x, int y);
+void keyupfunc(unsigned char key, int x, int y);
 void idlefunc();
 void lookfunc(int x, int y);
 void reshape(int w, int h);
@@ -112,6 +114,9 @@ void draw_sprite();
 void draw_fan();
 void draw_door();
 void draw_walls();
+
+void clip_camera_pos();
+void execute_movement();
 
 // DISPLAY LIST IDS
 #define WALLS 1
@@ -209,8 +214,10 @@ int main(int argc, char *argv[])
 #endif
 
 	// Define callbacks
+	glutIgnoreKeyRepeat(1);
 	glutDisplayFunc(display);
 	glutKeyboardFunc(keyfunc);
+	glutKeyboardUpFunc(keyupfunc);
 	glutIdleFunc(idlefunc);
 	glutReshapeFunc(reshape);
 	glutPassiveMotionFunc(lookfunc);
@@ -272,7 +279,7 @@ void display()
 	{
 		xratio = (GLfloat)ww / (GLfloat)hh;
 	}
-	glFrustum(-1.0, 1.0, -1.0, 1.0, 1.5, 200.0);
+	glFrustum(-1.0, 1.0, -1.0, 1.0, 1.0, 200.0);
 
 	// Set modelview matrix
 	glMatrixMode(GL_MODELVIEW);
@@ -292,6 +299,7 @@ void display()
 // Scene render function
 void render_Scene()
 {
+	glScalef(2.0f, 2.0f, 2.0f);
 	glUseProgram(defaultShaderProg);
 
 	glPushMatrix();
@@ -370,44 +378,53 @@ void render_Scene()
 	draw_walls();
 }
 
-void move_helper(unsigned char key) {
-	if (key == 'a')
-	{
-		eye[X] += sin(DEG2RAD * theta) * 0.25f;
-		eye[Z] -= cos(DEG2RAD * theta) * 0.25f;
+void clip_camera_pos() {
+	if (eye[X] > 5.5f) {
+		eye[X] = 5.5f;
 	}
-	else if (key == 'd')
-	{
-		eye[X] -= sin(DEG2RAD * theta) * 0.25f;
-		eye[Z] += cos(DEG2RAD * theta) * 0.25f;
+	if (eye[X] < -5.5f) {
+		eye[X] = -5.5f;
 	}
-	if (key == 'w')
-	{
+	if (eye[Z] > 5.5f) {
+		eye[Z] = 5.5f;
+	}
+	if (eye[Z] < -3.0) {
+		eye[Z] = -3.0f;
+	}
+}
 
-		eye[X] += cos(DEG2RAD * theta) * 0.1f;
-		eye[Z] += sin(DEG2RAD * theta) * 0.1f;
-		
+void execute_movement() {
+	bool needs_redisplay = false;
+	if (keys['a']) {
+		eye[X] += sin(DEG2RAD * theta) * 0.01f;
+		eye[Z] -= cos(DEG2RAD * theta) * 0.01f;
+		needs_redisplay = true;
 	}
-	else if (key == 's')
-	{
-		eye[X] -= cos(DEG2RAD * theta) * 0.1f;
-		eye[Z] -= sin(DEG2RAD * theta) * 0.1f;
+	if (keys['d']) {
+		eye[X] -= sin(DEG2RAD * theta) * 0.01f;
+		eye[Z] += cos(DEG2RAD * theta) * 0.01f;
+		needs_redisplay = true;
+	}
+	if (keys['w']) {
+		eye[X] += cos(DEG2RAD * theta) * 0.01f;
+		eye[Z] += sin(DEG2RAD * theta) * 0.01f;
+		needs_redisplay = true;
+	}
+	if (keys['s']) {
+		eye[X] -= cos(DEG2RAD * theta) * 0.01f;
+		eye[Z] -= sin(DEG2RAD * theta) * 0.01f;
+		needs_redisplay = true;
 	}
 
-	if (eye[X] > 1.5f) {
-		eye[X] = 1.5f;
-	}
-	if (eye[X] < -1.5f) {
-		eye[X] = -1.5f;
-	}
-	if (eye[Z] > 2.0f) {
-		eye[Z] = 2.0f;
-	}
-	if (eye[Z] < -0.75) {
-		eye[Z] = -0.75f;
-	}
+	clip_camera_pos(); // make sure camera stays within bounds of house
 
-	glutPostRedisplay();
+	if (needs_redisplay) glutPostRedisplay();
+}
+
+// Keyup callback
+void keyupfunc(unsigned char _key, int x, int y) {
+	unsigned char key = tolower(_key);
+	keys[key] = false;
 }
 
 // Keyboard callback
@@ -421,7 +438,7 @@ void keyfunc(unsigned char _key, int x, int y)
 	unsigned char key = tolower(_key);
 
 	if (key == 'w' || key == 's' || key == 'a' || key == 'd') {
-		move_helper(key);
+		keys[key] = true;
 	}
 	else if (key == 'b') {
 		if (blindsAnim) {
@@ -489,6 +506,8 @@ void idlefunc()
 		fan_theta += 0.1f;
 		glutPostRedisplay();
 	}
+
+	execute_movement();
 }
 
 // Reshape callback
