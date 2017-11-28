@@ -247,7 +247,7 @@ int main(int argc, char *argv[])
 	defaultShaderProg = load_shaders(defaultVertexFile, defaultFragmentFile);
 	lightShaderProg = load_shaders(lightVertexFile, lightFragmentFile);
 	textureShaderProg = load_shaders(texVertexFile, texFragmentFile);
-	numLights_param = glGetUniformLocation(lightShaderProg, "num_lights");
+	numLights_param = glGetUniformLocation(lightShaderProg, "numLights");
 	texSampler = glGetUniformLocation(textureShaderProg, "texMap");
 	glUseProgram(defaultShaderProg);
 
