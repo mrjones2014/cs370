@@ -110,7 +110,8 @@ GLfloat teapot_theta = 0.0f;
 // Animation variables
 GLfloat time = 0.0f, lasttime = 0.0f;
 GLfloat fps = 30.0f;
-GLboolean teapot_anim = false;
+
+GLboolean teapot_anim = true;
 GLfloat teapot_rps = 1.0f;
 
 // Camera rotation variables
