@@ -1,6 +1,9 @@
 // CS370 - Fall 2016
 // Assign04 - Textured Tea Man
 
+// Press 'L' for sprinting mode!
+// Press and hold 'L' for some real weird shit.
+
 #ifdef OSX
 	#include <GLUT/glut.h>
 #else
@@ -93,8 +96,8 @@ GLfloat cube[][3] = { { -1.0f, -1.0f, -1.0f }, { 1.0f, -1.0f, -1.0f }, { 1.0f, -
 GLfloat cube_tex[][2] = { 
 	{ 0.5f, 0.5f },{ 0.5f, 0.5f },{ 0.5f, 0.5f },{ 0.5f, 0.5f },
 	{ 0.5f,0.5f },{ 0.5f, 0.5f },{ 0.5f, 0.5f },{ 0.5f, 0.5f },
-	{ 0.5f,0.5f },{ 0.5f, 0.5f },{ 0.5f, 0.5f },{ 0.5f, 0.5f },
-	{ 0.5f,0.5f },{ 0.5f, 0.5f },{ 0.5f, 0.5f },{ 0.5f, 0.5f },
+	{ (408.0f / 582.0f), 0.1f },{ (495.0f / 582.0f), 0.1f },{ (495.0f / 582.0f), 1.0f },{ (408.0f / 582.0f), 1.0f },
+	{ (495.0f / 582.0f), 0.1f },{ 1.0f, 0.1f },{ 1.0f, 1.0f },{ (495.0f / 582.0f), 1.0f },
 	{ (204.0f / 582.0f),0.0f },{ (204.0f / 582.0f), 1.0f },{ (408.0f / 582.0f), 1.0f },{ (408.0f / 582.0f), 0.0f },
 	{ 0.0f, 0.0f },{ 204.0 / 582.0f, 1.0f },{ 204.0 / 582.0f, 1.0f },{ 0.0f, 1.0f }
 };
@@ -113,6 +116,20 @@ GLfloat fps = 30.0f;
 
 GLboolean teapot_anim = true;
 GLfloat teapot_rps = 1.0f;
+
+GLfloat sps = 1.0f;
+
+GLfloat steps_dir = 1.0f;
+
+GLfloat upper_arm_theta = 0.0f;
+GLfloat upper_arm_theta_max = 35.0f;
+GLfloat lower_arm_theta_ratio = 0.85f;
+
+GLfloat upper_leg_theta = 0.0f;
+GLfloat upper_leg_theta_max = 15.0f;
+GLfloat lower_leg_theta_ratio = 1.0f;
+
+GLboolean sprintmode = false;
 
 // Camera rotation variables
 
@@ -294,6 +311,16 @@ void keyfunc(unsigned char key, int x, int y)
 	if (key == ' ') {
 		teapot_anim = !teapot_anim;
 	}
+	if (key == 'L' || key == 'l') {
+		sprintmode = !sprintmode;
+	}
+}
+
+GLfloat calculate_dtheta(GLfloat rate, GLfloat range) {
+	// (seconds * rotations/second) results in fraction of 1 full rotation,
+	// multiply this fraction by range (max degrees) to get rotation in degrees
+	GLfloat elapsed_time = (time - lasttime) / 1000.0f;
+	return  (elapsed_time * rate) * range;
 }
 
 // Idle callback
@@ -303,14 +330,40 @@ void idlefunc()
 	time = glutGet(GLUT_ELAPSED_TIME);
 	if (time - lasttime > 1000.0f / fps) {
 		if (teapot_anim) {
-			// (seconds * rotations/second) results in fraction of 1 full rotation,
-			// 1 full rotation = 360 degrees; multiply this fraction by 360 to get rotation in degrees
-			GLfloat elapsed_time = (time - lasttime) / 1000.0f;
-			GLfloat dtheta = (elapsed_time * teapot_rps) * 360.0f;
-			teapot_theta += dtheta;
+			GLfloat rps;
+			if (sprintmode) rps = teapot_rps * 35;
+			else rps = teapot_rps;
+			teapot_theta += calculate_dtheta(rps, 360.0f);
 			if (teapot_theta > 360) teapot_theta -= 360; // bound to 0-360 degrees
 			update_teapot();
 		}
+
+		GLfloat _sps;
+		if (sprintmode) _sps = sps * 35;
+		else _sps = sps;
+		GLfloat arm_dtheta = calculate_dtheta(_sps, upper_arm_theta_max);
+		GLfloat leg_dtheta = calculate_dtheta(_sps, upper_leg_theta_max);
+		int arm_theta_diff = abs((int)(sqrt(pow(upper_arm_theta, 2)) - sqrt(pow(upper_arm_theta_max, 2))));
+		int leg_theta_diff = abs((int)(upper_leg_theta - upper_leg_theta_max));
+
+		if (arm_theta_diff <= 0 || arm_theta_diff >= upper_arm_theta_max) {
+			steps_dir *= -1.0f;
+		}
+
+		upper_arm_theta += arm_dtheta * steps_dir;
+		upper_leg_theta += leg_dtheta * steps_dir;
+
+		update_leftshoulder();
+		update_lefthand();
+		update_rightshoulder();
+		update_righthand();
+		update_leftleg();
+		update_leftfoot();
+		update_rightleg();
+		update_rightfoot();
+
+		glutPostRedisplay();
+
 		lasttime = time;
 	}
 }
@@ -473,7 +526,7 @@ void create_scene_graph()
 	head.material = brass;
 	head.f = draw_head;
 	head.sibling = &leftshoulder;
-	head.child = NULL;
+	head.child = &teapot;
 	head.shaderProg = lightShaderProg;
 	update_head();
 
@@ -487,7 +540,7 @@ void create_scene_graph()
 	lefthand.material = brass;
 	lefthand.f = draw_lefthand;
 	lefthand.sibling = NULL;
-	lefthand.child = &teapot;
+	lefthand.child = NULL;
 	lefthand.shaderProg = lightShaderProg;
 	update_lefthand();
 
@@ -646,6 +699,7 @@ void update_leftshoulder()
 {
 	glPushMatrix();
 		glLoadIdentity();
+		glRotatef(upper_arm_theta, 0.0f, TORSO_HEIGHT - (UPPER_ARM_SHOULDER_RATIO * 2), (TORSO_DEPTH + (UPPER_ARM_HEIGHT * UPPER_ARM_SHOULDER_RATIO)));
 		glGetFloatv(GL_MODELVIEW_MATRIX, leftshoulder.m);
 	glPopMatrix();
 }
@@ -671,6 +725,8 @@ void update_lefthand()
 {
 	glPushMatrix();
 		glLoadIdentity();
+		GLfloat angle = upper_arm_theta * lower_arm_theta_ratio;
+		if (angle < 0) glRotatef(angle, 0.0f, TORSO_HEIGHT - (UPPER_ARM_HEIGHT + (2 * LOWER_ARM_ELBOW_RATIO)), (TORSO_DEPTH + (UPPER_ARM_HEIGHT * UPPER_ARM_SHOULDER_RATIO)));
 		glGetFloatv(GL_MODELVIEW_MATRIX, lefthand.m);
 	glPopMatrix();
 }
@@ -695,6 +751,7 @@ void update_rightshoulder()
 {
 	glPushMatrix();
 		glLoadIdentity();
+		glRotatef(upper_arm_theta, 0.0f, TORSO_HEIGHT - (UPPER_ARM_SHOULDER_RATIO * 2), -(TORSO_DEPTH + (UPPER_ARM_HEIGHT * UPPER_ARM_SHOULDER_RATIO)));
 		glGetFloatv(GL_MODELVIEW_MATRIX, rightshoulder.m);
 	glPopMatrix();
 }
@@ -720,6 +777,8 @@ void update_righthand()
 {
 	glPushMatrix();
 		glLoadIdentity();
+		GLfloat angle = upper_arm_theta * lower_arm_theta_ratio;
+		if (angle > 0) glRotatef(angle, 0.0f, TORSO_HEIGHT - (UPPER_ARM_HEIGHT + (2 * LOWER_ARM_ELBOW_RATIO)), -(TORSO_DEPTH + (UPPER_ARM_HEIGHT * UPPER_ARM_SHOULDER_RATIO)));
 		glGetFloatv(GL_MODELVIEW_MATRIX, righthand.m);
 	glPopMatrix();
 }
@@ -738,6 +797,7 @@ void update_leftleg()
 {
 	glPushMatrix();
 		glLoadIdentity();
+		glRotatef(upper_leg_theta, 0.0f, 0.0f, UPPER_LEG_XOFFSET);
 		glGetFloatv(GL_MODELVIEW_MATRIX, leftleg.m);
 	glPopMatrix();
 }
@@ -774,6 +834,7 @@ void update_rightleg()
 {
 	glPushMatrix();
 		glLoadIdentity();
+		glRotatef(-upper_leg_theta, 0.0f, 0.0f, UPPER_LEG_XOFFSET);
 		glGetFloatv(GL_MODELVIEW_MATRIX, rightleg.m);
 	glPopMatrix();
 }
@@ -830,5 +891,4 @@ void update_teapot() {
 		glRotatef(teapot_theta, 0.0f, 1.0f, 0.0f);
 		glGetFloatv(GL_MODELVIEW_MATRIX, teapot.m);
 	glPopMatrix();
-	glutPostRedisplay();
 }
