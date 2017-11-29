@@ -337,7 +337,7 @@ void render_Scene()
 	glUseProgram(textureShaderProg);
 
 	glPushMatrix();
-		glBindTexture(GL_FRONT_AND_BACK, BOWL_TEX);
+		glBindTexture(GL_TEXTURE_3D, BOWL_TEX);
 		glCallList(BOWL);
 	glPopMatrix();
 

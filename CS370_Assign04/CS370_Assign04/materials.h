@@ -14,11 +14,15 @@ MaterialType red_plastic = {{0.3,0.0,0.0,1.0},
 						{0.6,0.0,0.0,1.0},
 						{0.8,0.6,0.6,1.0},
 						32.0};
+MaterialType red_glass = { { 0.3f, 0.0f, 0.0f, 0.5f },
+							{ 0.6f, 0.0f, 0.0f, 0.5f },
+							{ 0.8f, 0.6f, 0.6f, 0.5f },
+							32.0f };
 
 MaterialType silver = { {0.19225,0.19225,0.19225, 1.0},
 						{0.50754,0.50754,0.50754, 1.0},
 						{0.508273,0.508273,0.508273, 1.0},
-						0.4 };
+						50.0 };
 						
 void set_material(GLenum face, MaterialType *material)
 {

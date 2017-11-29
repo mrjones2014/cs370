@@ -5,8 +5,8 @@ c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\materials
 c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\materials.h(11): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
 c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\materials.h(16): warning C4838: conversion from 'double' to 'GLfloat' requires a narrowing conversion
 c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\materials.h(16): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
-c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\materials.h(21): warning C4838: conversion from 'double' to 'GLfloat' requires a narrowing conversion
-c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\materials.h(21): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\materials.h(25): warning C4838: conversion from 'double' to 'GLfloat' requires a narrowing conversion
+c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\materials.h(25): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
 c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\shaderutils.h(20): warning C4996: 'open': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _open. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\corecrt_io.h(514): note: see declaration of 'open'
 c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\shaderutils.h(23): warning C4996: 'lseek': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _lseek. See online help for details.
@@ -15,12 +15,22 @@ c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\shaderuti
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\corecrt_io.h(457): note: see declaration of 'close'
 c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\shaderutils.h(43): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(205): note: see declaration of 'fopen'
-c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\teaman.cpp(177): warning C4305: 'argument': truncation from 'double' to 'GLclampf'
-c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\teaman.cpp(183): warning C4838: conversion from 'double' to 'GLfloat' requires a narrowing conversion
-c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\teaman.cpp(183): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
-c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\teaman.cpp(296): warning C4305: '=': truncation from 'double' to 'GLfloat'
-c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\teaman.cpp(300): warning C4305: '=': truncation from 'double' to 'GLfloat'
-c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\teaman.cpp(335): warning C4244: '=': conversion from 'int' to 'GLfloat', possible loss of data
-c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\teaman.cpp(336): warning C4244: '=': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\teaman.cpp(100): warning C4838: conversion from 'double' to 'GLfloat' requires a narrowing conversion
+c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\teaman.cpp(100): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\teaman.cpp(198): warning C4305: 'argument': truncation from 'double' to 'GLclampf'
+c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\teaman.cpp(204): warning C4838: conversion from 'double' to 'GLfloat' requires a narrowing conversion
+c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\teaman.cpp(204): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\teaman.cpp(302): warning C4244: '=': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\teaman.cpp(336): warning C4305: '=': truncation from 'double' to 'GLfloat'
+c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\teaman.cpp(340): warning C4305: '=': truncation from 'double' to 'GLfloat'
+c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\teaman.cpp(373): warning C4244: '=': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\teaman.cpp(374): warning C4244: '=': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\teaman.cpp(613): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\teaman.cpp(656): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\teaman.cpp(657): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\teaman.cpp(663): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\teaman.cpp(705): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\teaman.cpp(706): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+c:\users\matjones\documents\github\cs370\cs370_assign04\cs370_assign04\teaman.cpp(712): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
   CS370_Assign04.vcxproj -> C:\Users\MatJones\Documents\GitHub\cs370\CS370_Assign04\Debug\CS370_Assign04.exe
   CS370_Assign04.vcxproj -> C:\Users\MatJones\Documents\GitHub\cs370\CS370_Assign04\Debug\CS370_Assign04.pdb (Full PDB)
