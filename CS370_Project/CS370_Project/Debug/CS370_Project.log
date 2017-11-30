@@ -7,21 +7,32 @@ c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\shaderutils
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\corecrt_io.h(457): note: see declaration of 'close'
 c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\shaderutils.h(43): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(205): note: see declaration of 'fopen'
-c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(81): warning C4838: conversion from 'double' to 'GLfloat' requires a narrowing conversion
-c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(81): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
-c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(399): warning C4244: '+=': conversion from 'double' to 'GLfloat', possible loss of data
-c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(400): warning C4244: '-=': conversion from 'double' to 'GLfloat', possible loss of data
-c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(404): warning C4244: '-=': conversion from 'double' to 'GLfloat', possible loss of data
-c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(405): warning C4244: '+=': conversion from 'double' to 'GLfloat', possible loss of data
-c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(409): warning C4244: '+=': conversion from 'double' to 'GLfloat', possible loss of data
-c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(410): warning C4244: '+=': conversion from 'double' to 'GLfloat', possible loss of data
-c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(414): warning C4244: '-=': conversion from 'double' to 'GLfloat', possible loss of data
-c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(415): warning C4244: '-=': conversion from 'double' to 'GLfloat', possible loss of data
-c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(462): warning C4244: '=': conversion from 'int' to 'GLfloat', possible loss of data
-c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(463): warning C4244: '=': conversion from 'int' to 'GLfloat', possible loss of data
-c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(473): warning C4244: '+=': conversion from 'double' to 'GLfloat', possible loss of data
-c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(478): warning C4244: '=': conversion from 'int' to 'GLfloat', possible loss of data
-c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(479): warning C4244: '=': conversion from 'int' to 'GLfloat', possible loss of data
-c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(501): warning C4244: '=': conversion from 'unsigned int' to 'GLfloat', possible loss of data
+c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(84): warning C4838: conversion from 'double' to 'GLfloat' requires a narrowing conversion
+c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(84): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(426): warning C4244: '+=': conversion from 'double' to 'GLfloat', possible loss of data
+c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(427): warning C4244: '-=': conversion from 'double' to 'GLfloat', possible loss of data
+c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(431): warning C4244: '-=': conversion from 'double' to 'GLfloat', possible loss of data
+c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(432): warning C4244: '+=': conversion from 'double' to 'GLfloat', possible loss of data
+c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(436): warning C4244: '+=': conversion from 'double' to 'GLfloat', possible loss of data
+c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(437): warning C4244: '+=': conversion from 'double' to 'GLfloat', possible loss of data
+c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(441): warning C4244: '-=': conversion from 'double' to 'GLfloat', possible loss of data
+c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(442): warning C4244: '-=': conversion from 'double' to 'GLfloat', possible loss of data
+c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(493): warning C4244: '=': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(494): warning C4244: '=': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(504): warning C4244: '+=': conversion from 'double' to 'GLfloat', possible loss of data
+c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(509): warning C4244: '=': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(510): warning C4244: '=': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(532): warning C4244: '=': conversion from 'unsigned int' to 'GLfloat', possible loss of data
+c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(830): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(831): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(832): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(833): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(872): warning C4305: '-=': truncation from 'double' to 'GLfloat'
+c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(839): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1769): note: see declaration of 'sprintf'
+c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(840): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1769): note: see declaration of 'sprintf'
+c:\users\matjones\documents\github\cs370\cs370_project\cs370_project\house.cpp(841): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1769): note: see declaration of 'sprintf'
   CS370_Project.vcxproj -> C:\Users\MatJones\Documents\GitHub\cs370\CS370_Project\Debug\CS370_Project.exe
   CS370_Project.vcxproj -> C:\Users\MatJones\Documents\GitHub\cs370\CS370_Project\Debug\CS370_Project.pdb (Full PDB)

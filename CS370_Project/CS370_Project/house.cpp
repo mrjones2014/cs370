@@ -4,6 +4,7 @@
 
 // CONTROLS (case insensitive) 
 /*
+ * 0 - toggle debug mode (disable camera clipping)
  * W - move forward
  * S - move backward 
  * A - strafe left
@@ -13,7 +14,9 @@
  * B - toggle the blinds open/closed
  * move mouse - look around
  */
-// implemented movement with WASD strafe and mouse look
+
+bool debug = false;
+char camera_pos_str[3][50];
 
 #ifdef OSX
 #include <GLUT/glut.h>
@@ -118,6 +121,11 @@ void draw_walls();
 void clip_camera_pos();
 void execute_movement();
 
+void create_mirror();
+void draw_mirror();
+
+void draw_debug_text();
+
 // DISPLAY LIST IDS
 #define WALLS 1
 #define DESK 2
@@ -145,9 +153,10 @@ void execute_movement();
 #define ROOF_TEX 10 
 #define BOWL_TEX 11
 #define BRICK_TEX 12
-#define NO_TEXTURE 13
+#define ENVIRONMENT 13
+#define NO_TEXTURE 14
 
-GLint tex_ids[NO_TEXTURE] = { 0,0,0,0,0,0,0,0,0,0,0,0,0 };
+GLint tex_ids[NO_TEXTURE] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 char tex_files[NO_TEXTURE][30] = { 
 	"log.jpg", 
 	"world.jpg", 
@@ -161,7 +170,8 @@ char tex_files[NO_TEXTURE][30] = {
 	"floor.jpg",
 	"roof.jpg",
 	"bowl.bmp",
-	"brick.jpg"
+	"brick.jpg",
+	"blank.bmp"
 };
 
 GLfloat outlineColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
@@ -178,6 +188,12 @@ GLUquadricObj* spriteCan;
 GLUquadricObj* spriteTop;
 GLUquadricObj* bowl;
 GLUquadricObj* fanCenter;
+
+GLfloat mirror_x = -3.89f;
+GLfloat mirror_y_upper = 2.0f;
+GLfloat mirror_y_lower = -1.0f;
+GLfloat mirror_z_left = -2.5f;
+GLfloat mirror_z_right = -mirror_z_left;
 
 
 int main(int argc, char *argv[])
@@ -260,6 +276,10 @@ int main(int argc, char *argv[])
 // Display callback
 void display()
 {
+	// PASS 1 - Create mirror texture 
+	create_mirror();
+
+	// PASS 2 - Render actual scene
 	// Reset background
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -289,6 +309,12 @@ void display()
 	// Render scene
 	render_Scene();
 
+	// Render mirror
+	draw_mirror();
+
+	// Draw debug text if debug mode
+	if (debug) draw_debug_text();
+
 	// Flush buffer
 	glFlush();
 
@@ -300,15 +326,16 @@ void display()
 void render_Scene()
 {
 	glScalef(2.0f, 2.0f, 2.0f);
+	
+	glPushMatrix();
+		draw_mirror();
+	glPopMatrix();
+
 	glUseProgram(defaultShaderProg);
 
 	glPushMatrix();
 		glCallList(WINDOW_BORDER);
 	glEndList();
-
-	glPushMatrix();
-		glCallList(MIRROR); // not a mirror yet
-	glPopMatrix();
 
 	glPushMatrix();
 		glCallList(FRUIT);
@@ -337,7 +364,7 @@ void render_Scene()
 	glUseProgram(textureShaderProg);
 
 	glPushMatrix();
-		glBindTexture(GL_TEXTURE_3D, BOWL_TEX);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[BOWL_TEX]);
 		glCallList(BOWL);
 	glPopMatrix();
 
@@ -416,7 +443,7 @@ void execute_movement() {
 		needs_redisplay = true;
 	}
 
-	clip_camera_pos(); // make sure camera stays within bounds of house
+	if (!debug) clip_camera_pos(); // make sure camera stays within bounds of house
 
 	if (needs_redisplay) glutPostRedisplay();
 }
@@ -434,6 +461,10 @@ void keyfunc(unsigned char _key, int x, int y)
 	if (_key == 27)
 	{
 		exit(0);
+	}
+	if (_key == '0') {
+		debug = !debug;
+		glutPostRedisplay();
 	}
 	unsigned char key = tolower(_key);
 
@@ -568,12 +599,6 @@ void create_lists() {
 		texCube();
 	glEndList();
 
-	glNewList(MIRROR, GL_COMPILE);
-		glTranslatef(-3.9f, 0.25f, 0.0f);
-		glScalef(0.01f, 1.0f, 1.75f);
-		renderCube(mirrorColor, outlineColor);
-	glEndList();
-
 	glNewList(BRICK_BEHIND_DOOR, GL_COMPILE);
 		glTranslatef(2.25f, -0.1f, 4.0f);
 		glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
@@ -629,23 +654,47 @@ void create_lists() {
 bool load_textures() {
 	for (int i = 0; i < NO_TEXTURE; i++)
 	{
-		// TODO: Load images
-		tex_ids[i] = SOIL_load_OGL_texture(tex_files[i], SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y);
-		
-		// Set texture properties if successfully loaded
-		if (tex_ids[i] != 0)
-		{
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+		if (i == ENVIRONMENT) {
+			// Load environment map texture (NO MIPMAPPING)
+			tex_ids[i] = SOIL_load_OGL_texture(tex_files[0], SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
 
-			// TODO: Set wrapping modes
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+			// TODO: Set environment map properties if successfully loaded
+			if (tex_ids[i] != 0)
+			{
+				// Set scaling filters (no mipmap)
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+				// Set wrapping modes (clamped)
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+
+			}
+			// Otherwise texture failed to load
+			else
+			{
+				return false;
+			}
 		}
-		// Otherwise texture failed to load
-		else
-		{
-			return false;
+		else {
+			// TODO: Load images
+			tex_ids[i] = SOIL_load_OGL_texture(tex_files[i], SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y);
+
+			// Set texture properties if successfully loaded
+			if (tex_ids[i] != 0)
+			{
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+
+				// TODO: Set wrapping modes
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+			}
+			// Otherwise texture failed to load
+			else
+			{
+				return false;
+			}
 		}
 	}
 	return true;
@@ -727,4 +776,117 @@ void draw_door() {
 		glScalef(1.9f, 1.0f, 0.01f);
 		texCube();
 	glPopMatrix();
+}
+
+
+void create_mirror() {
+	// PASS 1 - Render reflected scene
+	// Reset background
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// TODO: Set projection matrix for flat "mirror" camera
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(mirror_z_left, mirror_y_upper, mirror_y_lower, mirror_y_upper, 0.0, 15.0);
+
+	// TODO: Set modelview matrix positioning "mirror" camera
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	gluLookAt(mirror_x, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
+	// TODO: Render scene from mirror
+	glPushMatrix();
+	render_Scene();
+	glPopMatrix();
+
+	glFinish();
+
+	// TODO: Copy scene to texture
+	glBindTexture(GL_TEXTURE_2D, tex_ids[ENVIRONMENT]);
+	glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, 512, 512, 0);
+}
+
+void draw_mirror() {
+	glPushMatrix();
+		glUseProgram(textureShaderProg);
+		glUniform1i(texSampler,0);
+		// TODO: Draw mirror surface
+		glBindTexture(GL_TEXTURE_2D, tex_ids[ENVIRONMENT]);
+		glBegin(GL_POLYGON);
+			glTexCoord2f(0.0f, 0.0f);
+			glVertex3f(mirror_x, mirror_y_lower, mirror_z_left);
+			glTexCoord2f(0.0f, 1.0f);
+			glVertex3f(mirror_x, mirror_y_upper, mirror_z_left);
+			glTexCoord2f(1.0f, 1.0f);
+			glVertex3f(mirror_x, mirror_y_upper, mirror_z_right);
+			glTexCoord2f(1.0f, 0.0f);
+			glVertex3f(mirror_x, mirror_y_lower, mirror_z_right);
+		glEnd();
+
+		// Draw mirror frame
+		glUseProgram(defaultShaderProg);
+		glColor3f(0.8f, 0.8f, 0.8f);
+		glBegin(GL_POLYGON);
+			glVertex3f(mirror_x - 0.001, mirror_y_lower - 0.15, mirror_z_left - 0.15);
+			glVertex3f(mirror_x - 0.001, mirror_y_upper + 0.15, mirror_z_left - 0.15);
+			glVertex3f(mirror_x - 0.001, mirror_y_upper + 0.15, mirror_z_right + 0.15);
+			glVertex3f(mirror_x - 0.001, mirror_y_lower - 0.15, mirror_z_right + 0.15);
+		glEnd();
+	glPopMatrix();
+}
+
+void draw_debug_text() {
+	sprintf(camera_pos_str[0], "X: %f", eye[X]);
+	sprintf(camera_pos_str[1], "Y: %f", eye[Y]);
+	sprintf(camera_pos_str[2], "Z: %f", eye[Z]);
+
+	// Save previous matrices, switch to 2D, and turn off lighting for text
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluOrtho2D(-1.0, 1.0, -1.0, 1.0);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+
+	// Switch to default shader
+	glUseProgram(0);
+
+	GLfloat text_bg_color[4] = { 0.8f, 0.8f, 0.8f, 0.5f };
+	GLfloat text_bg[4][2] = {
+		{-1.0f, 1.0f},
+		{ -0.25f, 1.0f},
+		{ -0.25f, 0.65f},
+		{-1.0f, 0.65f}
+	};
+
+	// TODO: Set camera_pos_str text position to top left and draw
+	glColor3f(0.0f, 0.0f, 0.0f);
+	GLfloat text_y = 0.9f;
+	for (unsigned int i = 0; i < 3; i++) {
+		glRasterPos2f(-0.9f, text_y);
+		for (unsigned int j = 0; j<strlen(camera_pos_str[i]); j++)
+		{
+			glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, camera_pos_str[i][j]);
+		}
+		text_y -= 0.1;
+	}
+
+	glColor4fv(text_bg_color);
+
+	glBegin(GL_POLYGON);
+		glVertex2fv(text_bg[0]);
+		glVertex2fv(text_bg[1]);
+		glVertex2fv(text_bg[2]);
+		glVertex2fv(text_bg[3]);
+	glEnd();
+
+	// Restore previous matricies and turn on lighting
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+
+	// Switch to default shader program
+	glUseProgram(defaultShaderProg);
 }
