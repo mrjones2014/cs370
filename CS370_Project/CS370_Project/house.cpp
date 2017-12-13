@@ -138,6 +138,11 @@ void draw_debug_text();
 #define WINDOW_BORDER 9
 #define FRUIT 10
 #define BRICK_BEHIND_DOOR 11
+#define CHAIR 12
+#define COMPUTER 13
+#define COMPUTER_SCREEN 14
+#define SWITCH 15
+#define KEYBOARD 16
 
 
 #define WALL_TEX 0
@@ -154,9 +159,11 @@ void draw_debug_text();
 #define BOWL_TEX 11
 #define BRICK_TEX 12
 #define ENVIRONMENT 13
-#define NO_TEXTURE 14
+#define SATAN 14
+#define KEYBOARD_TEX 15
+#define NO_TEXTURE 16
 
-GLint tex_ids[NO_TEXTURE] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+GLint tex_ids[NO_TEXTURE] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 char tex_files[NO_TEXTURE][30] = { 
 	"log.jpg", 
 	"world.jpg", 
@@ -171,7 +178,9 @@ char tex_files[NO_TEXTURE][30] = {
 	"roof.jpg",
 	"bowl.bmp",
 	"brick.jpg",
-	"blank.bmp"
+	"blank.bmp",
+	"html-regex-satan.jpg",
+	"keyboard.png"
 };
 
 GLfloat outlineColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
@@ -324,7 +333,7 @@ void display()
 
 // Scene render function
 void render_Scene()
-{
+{ 
 	glScalef(2.0f, 2.0f, 2.0f);
 	
 	glPushMatrix();
@@ -361,7 +370,21 @@ void render_Scene()
 		draw_fan();
 	glPopMatrix();
 
+	glPushMatrix();
+		glCallList(COMPUTER);
+	glPopMatrix();
+
 	glUseProgram(textureShaderProg);
+
+	glPushMatrix();
+		glBindTexture(GL_TEXTURE_2D, tex_ids[SATAN]);
+		glCallList(COMPUTER_SCREEN);
+	glPopMatrix();
+
+	glPushMatrix();
+		glBindTexture(GL_TEXTURE_2D, tex_ids[KEYBOARD_TEX]);
+		glCallList(KEYBOARD);
+	glPopMatrix();
 
 	glPushMatrix();
 		glBindTexture(GL_TEXTURE_2D, tex_ids[BOWL_TEX]);
@@ -383,6 +406,13 @@ void render_Scene()
 	glPushMatrix();
 		glBindTexture(GL_TEXTURE_2D, tex_ids[WOOD_TEX]);
 		glCallList(DESK);
+	glPopMatrix();
+
+	glPushMatrix();
+		glBindTexture(GL_TEXTURE_2D, tex_ids[WOOD_TEX]);
+		glTranslatef(-3.0f, 0.0f, 3.0f);
+		glRotatef(45+90, 0.0f, 1.0f, 0.0f);
+		glCallList(CHAIR);
 	glPopMatrix();
 
 	glPushMatrix();
@@ -423,23 +453,23 @@ void clip_camera_pos() {
 void execute_movement() {
 	bool needs_redisplay = false;
 	if (keys['a']) {
-		eye[X] += sin(DEG2RAD * theta) * 0.01f;
-		eye[Z] -= cos(DEG2RAD * theta) * 0.01f;
+		eye[X] += sin(DEG2RAD * theta) * 0.1f;
+		eye[Z] -= cos(DEG2RAD * theta) * 0.1f;
 		needs_redisplay = true;
 	}
 	if (keys['d']) {
-		eye[X] -= sin(DEG2RAD * theta) * 0.01f;
-		eye[Z] += cos(DEG2RAD * theta) * 0.01f;
+		eye[X] -= sin(DEG2RAD * theta) * 0.1f;
+		eye[Z] += cos(DEG2RAD * theta) * 0.1f;
 		needs_redisplay = true;
 	}
 	if (keys['w']) {
-		eye[X] += cos(DEG2RAD * theta) * 0.01f;
-		eye[Z] += sin(DEG2RAD * theta) * 0.01f;
+		eye[X] += cos(DEG2RAD * theta) * 0.1f;
+		eye[Z] += sin(DEG2RAD * theta) * 0.1f;
 		needs_redisplay = true;
 	}
 	if (keys['s']) {
-		eye[X] -= cos(DEG2RAD * theta) * 0.01f;
-		eye[Z] -= sin(DEG2RAD * theta) * 0.01f;
+		eye[X] -= cos(DEG2RAD * theta) * 0.1f;
+		eye[Z] -= sin(DEG2RAD * theta) * 0.1f;
 		needs_redisplay = true;
 	}
 
@@ -534,7 +564,7 @@ void idlefunc()
 		glutPostRedisplay();
 	}
 	if (fanAnim) {
-		fan_theta += 0.1f;
+		fan_theta += 1.0f;
 		glutPostRedisplay();
 	}
 
@@ -553,6 +583,71 @@ void reshape(int w, int h)
 }
 
 void create_lists() {
+	glNewList(COMPUTER, GL_COMPILE);
+		glPushMatrix();
+			glTranslatef(0.0f, -0.9f, -3.0f);
+			glScalef(0.6f, 0.075f, 0.2f);
+			renderCube();
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(0.0f, -0.75f, -3.0f);
+			glScalef(0.1f, 0.3, 0.1f);
+			renderCube();
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(0.0f, -0.1f, -3.0f);
+			glScalef(0.75f, 0.421875f, 0.075f);
+			renderCube();
+		glPopMatrix();
+	glEndList();
+	glNewList(COMPUTER_SCREEN, GL_COMPILE);
+		glPushMatrix();
+			glTranslatef(0.0f, -0.1f, -2.9f);
+			glScalef(-0.75f, 0.421875f, 0.005f);
+			texCube();
+		glPopMatrix();
+	glEndList();
+	glNewList(KEYBOARD, GL_COMPILE);
+		glPushMatrix();
+			glTranslatef(0.0f, -0.9f, -2.5f);
+			glScalef(0.6f, 0.005f, 0.2f);
+			texCube();
+		glPopMatrix();
+	glEndList();
+
+	glNewList(CHAIR, GL_COMPILE);
+		glPushMatrix();
+			glTranslatef(0.0f, -1.1f, 0.0f);
+			glScalef(0.5f, 0.1f, 0.5f);
+			texCube();
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(0.39f, -1.55f, 0.39f);
+			glScalef(0.1f, 0.5f, 0.1f);
+			texCube();
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(-0.39f, -1.55f, 0.39f);
+			glScalef(0.1f, 0.5f, 0.1f);
+			texCube();
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(-0.39f, -1.55f, -0.39f);
+			glScalef(0.1f, 0.5f, 0.1f);
+			texCube();
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(0.39f, -1.55f, -0.39f);
+			glScalef(0.1f, 0.5f, 0.1f);
+			texCube();
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(0.00f, -0.55f, -0.47f);
+			glScalef(0.5f, 0.5f, 0.05f);
+			texCube();
+		glPopMatrix();
+	glEndList();
+
 	glNewList(DESK, GL_COMPILE);
 		glPushMatrix();
 			glTranslatef(0.0f, -1.0f, -3.25f);
