@@ -30,6 +30,8 @@ char camera_pos_str[3][50];
 #include <math.h>
 #include "lighting.h"
 #include "materials.h"
+#include <ctype.h>
+#include <string.h>
 
 // Shader file utility functions
 #include "shaderutils.h"
